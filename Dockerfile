@@ -1,8 +1,10 @@
-FROM nginx:alpine
-
-COPY index.html /usr/share/nginx/html/index.html
-COPY style.css /usr/share/nginx/html/style.css
-COPY app.js /usr/share/nginx/html/app.js
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
+FROM node:20-alpine
+WORKDIR /app
+COPY package.json ./
+COPY server.js ./
+COPY index.html ./
+COPY style.css ./
+COPY app.js ./
+RUN mkdir -p data
 EXPOSE 10000
+CMD ["npm","start"]
