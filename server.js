@@ -29,6 +29,7 @@ const server=http.createServer(async(req,res)=>{
   }
   if(req.url==='/api/me'&&req.method==='GET'){const u=userFrom(req);return u?json(res,200,{user:{id:u.id,username:u.username,email:u.email}}):json(res,401,{error:'Not signed in.'})}
   if(req.url==='/api/logout'&&req.method==='POST'){const h=req.headers.authorization||'',s=read(sessionsFile);if(h.startsWith('Bearer '))delete s[h.slice(7)];write(sessionsFile,s);return json(res,200,{ok:true})}
+  if(req.url==='/api/config'&&req.method==='GET')return json(res,200,{supabaseUrl:process.env.SUPABASE_URL||'',supabaseKey:process.env.SUPABASE_PUBLISHABLE_KEY||''});
   if(req.url==='/api/health')return json(res,200,{ok:true});
   let p=req.url.split('?')[0];if(p==='/')p='/index.html';const file=path.join(root,p.replace(/^\//,''));if(!file.startsWith(root)||!fs.existsSync(file))return json(res,404,{error:'Not found'});
   const ext=path.extname(file),types={'.html':'text/html','.js':'text/javascript','.css':'text/css'};res.writeHead(200,{'Content-Type':types[ext]||'application/octet-stream'});fs.createReadStream(file).pipe(res);
